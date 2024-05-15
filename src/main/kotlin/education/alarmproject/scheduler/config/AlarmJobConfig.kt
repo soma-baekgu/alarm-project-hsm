@@ -1,6 +1,8 @@
 package education.alarmproject.scheduler.config
 
+import education.alarmproject.message.dto.MessageDto
 import education.alarmproject.message.service.MessageService
+import education.alarmproject.rabbitmq.service.ProducerService
 import org.springframework.batch.core.Job
 import org.springframework.batch.core.Step
 import org.springframework.batch.core.job.builder.JobBuilder
@@ -10,8 +12,6 @@ import org.springframework.batch.core.step.builder.StepBuilder
 import org.springframework.batch.core.step.tasklet.Tasklet
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.mail.MailSender
-import org.springframework.mail.SimpleMailMessage
 import org.springframework.transaction.PlatformTransactionManager
 
 @Configuration
@@ -19,7 +19,7 @@ class AlarmJobConfig(
     private val jobRepository: JobRepository,
     private val transactionManager: PlatformTransactionManager,
     private val messageService: MessageService,
-    private val mailSender: MailSender,
+    private val producerService: ProducerService,
 ) {
     @Bean
     fun job(): Job {
@@ -40,13 +40,13 @@ class AlarmJobConfig(
     fun tasklet(): Tasklet {
         return Tasklet { _, _ ->
             messageService.findMessagesToTransfer().forEach {
-                mailSender.send(
-                    SimpleMailMessage().apply {
-                        from = it.recipeint
-                        setTo(it.recipeint)
-                        subject = it.title
-                        text = it.message
-                    },
+                producerService.sendMessage(
+                    MessageDto(
+                        sender = it.sender,
+                        receiver = it.receiver,
+                        title = it.title,
+                        message = it.message,
+                    ),
                 )
             }
             null

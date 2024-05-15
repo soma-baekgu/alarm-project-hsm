@@ -12,7 +12,7 @@ class Message(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0L,
     val sender: String,
-    val recipeint: String,
+    val receiver: String,
     val title: String,
     val message: String,
     val alarmTransferTime: LocalDateTime,

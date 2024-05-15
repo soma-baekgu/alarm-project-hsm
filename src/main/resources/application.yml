@@ -23,6 +23,7 @@ spring:
     jdbc:
       initialize-schema: always
 
+
   jpa:
     open-in-view: false
     hibernate:
@@ -31,3 +32,19 @@ spring:
       dialect: org.hibernate.dialect.MySQL8InnoDBDialect
     defer-datasource-initialization: true
   sql.init.mode: always
+
+  # RabbitMQ 연결 정보
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+# RabbitMQ queue, exchange, routing-key 정보
+rabbitmq:
+  queue:
+    name: sample.queue
+  exchange:
+    name: sample.exchange
+  routing:
+    key: sample.key

@@ -17,7 +17,7 @@ class MessageService(
         messageRepository.save(
             Message(
                 sender = request.sender,
-                recipeint = request.recipient,
+                receiver = request.receiver,
                 title = request.title,
                 message = request.message,
                 alarmTransferTime =
