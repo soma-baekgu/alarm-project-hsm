@@ -1,7 +1,7 @@
 package education.alarmproject.rabbitmq.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import education.alarmproject.message.dto.MessageDto
+import education.alarmproject.notification.dto.NotificationDto
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.mail.MailSender
 import org.springframework.mail.SimpleMailMessage
@@ -14,7 +14,7 @@ class ConsumerService(
     @RabbitListener(queues = ["sample.queue"])
     fun receiveMessage(it: String) {
         val objectMapper = ObjectMapper()
-        val message = objectMapper.readValue(it, MessageDto::class.java)
+        val message = objectMapper.readValue(it, NotificationDto::class.java)
         mailSender.send(
             SimpleMailMessage().apply {
                 from = message.sender

@@ -1,9 +1,9 @@
-package education.alarmproject.message.dto
+package education.alarmproject.notification.dto
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 
-data class MessageDto
+data class NotificationDto
     @JsonCreator
     constructor(
         @JsonProperty("sender") val sender: String,
