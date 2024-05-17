@@ -14,13 +14,13 @@ class UserController(
 ) {
     @PostMapping("/users")
     fun registerUser(
-        @RequestBody userRegisterRequest: UserRegisterRequest,
+        @RequestBody request: UserRegisterRequest,
     ): ResponseEntity<Unit> {
         val location =
             ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(userService.registerUser(userRegisterRequest))
+                .buildAndExpand(userService.registerUser(request))
                 .toUri()
 
         return ResponseEntity.created(location).build()

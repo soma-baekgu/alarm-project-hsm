@@ -1,8 +1,9 @@
 package education.alarmproject.scheduler.config
 
-import education.alarmproject.message.dto.MessageDto
-import education.alarmproject.message.service.MessageService
+import education.alarmproject.notification.dto.NotificationDto
+import education.alarmproject.notification.service.NotificationService
 import education.alarmproject.rabbitmq.service.ProducerService
+import education.alarmproject.user.service.UserService
 import org.springframework.batch.core.Job
 import org.springframework.batch.core.Step
 import org.springframework.batch.core.job.builder.JobBuilder
@@ -18,8 +19,9 @@ import org.springframework.transaction.PlatformTransactionManager
 class AlarmJobConfig(
     private val jobRepository: JobRepository,
     private val transactionManager: PlatformTransactionManager,
-    private val messageService: MessageService,
+    private val notificationService: NotificationService,
     private val producerService: ProducerService,
+    private val userService: UserService,
 ) {
     @Bean
     fun job(): Job {
@@ -39,15 +41,24 @@ class AlarmJobConfig(
 
     fun tasklet(): Tasklet {
         return Tasklet { _, _ ->
-            messageService.findMessagesToTransfer().forEach {
-                producerService.sendMessage(
-                    MessageDto(
-                        sender = it.sender,
-                        receiver = it.receiver,
-                        title = it.title,
-                        message = it.message,
-                    ),
-                )
+
+            val notifications = notificationService.findNotificationToTransfer()
+
+            val users = userService.findByIdIn(notifications.map { it.receiver })
+
+            val userMap = users.associateBy { it.id }
+
+            notifications.forEach { notification ->
+                userMap[notification.receiver]?.let { user ->
+                    producerService.sendMessage(
+                        NotificationDto(
+                            sender = notification.sender,
+                            receiver = user.email,
+                            title = notification.title,
+                            message = notification.message,
+                        ),
+                    )
+                }
             }
             null
         }
