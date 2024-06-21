@@ -1,3 +1,3 @@
 rootProject.name = "alarm-project"
 
-include("alarm-core", "alarm-api", "alarm-batch")
+include("alarm-core", "alarm-api", "alarm-batch", "alarm-kafka-producer")
