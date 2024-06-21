@@ -11,12 +11,12 @@ import org.springframework.batch.core.step.builder.StepBuilder
 import org.springframework.batch.item.ItemProcessor
 import org.springframework.batch.item.ItemWriter
 import org.springframework.batch.item.database.JdbcCursorItemReader
+import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder
 import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.transaction.PlatformTransactionManager
 import java.sql.ResultSet
@@ -94,18 +94,9 @@ class PersonalNotificationJobComponent(
 
     @Bean
     fun notificationWriter(): ItemWriter<PersonalNotificationDto> =
-        ItemWriter { notifications ->
-            val jdbcTemplate = NamedParameterJdbcTemplate(dataSource)
-            val params =
-                notifications.map { notification ->
-                    MapSqlParameterSource().addValue("id", notification.id)
-                }
-
-            jdbcTemplate.batchUpdate("update notification set transmitted = true where id = :id", params.toTypedArray())
-            notifications.forEach { notification ->
-                logger.info {
-                    "Notification sent to: ${notification.receiverEmail} with title: ${notification.title} and message: ${notification.message}"
-                }
-            }
-        }
+        JdbcBatchItemWriterBuilder<PersonalNotificationDto>()
+            .dataSource(dataSource)
+            .sql("update notification set transmitted = true where id = :id")
+            .itemSqlParameterSourceProvider { MapSqlParameterSource().addValue("id", it.id) }
+            .build()
 }
