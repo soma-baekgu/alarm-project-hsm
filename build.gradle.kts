@@ -41,6 +41,7 @@ subprojects {
         implementation("org.springframework.boot:spring-boot-starter")
         implementation("org.springframework.boot:spring-boot-starter-data-jpa")
         implementation("io.github.oshai:kotlin-logging-jvm:5.1.1")
+        implementation("com.fasterxml.jackson.core:jackson-databind:2.17.1")
         testImplementation("org.springframework.boot:spring-boot-starter-test")
         testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
         testRuntimeOnly("org.junit.platform:junit-platform-launcher")

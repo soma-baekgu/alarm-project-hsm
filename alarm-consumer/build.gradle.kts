@@ -1,7 +1,7 @@
 dependencies {
     implementation(project(":alarm-core"))
     implementation("org.springframework.kafka:spring-kafka")
-    implementation("org.springframework.boot:spring-boot-starter-batch")
+    implementation("org.springframework.boot:spring-boot-starter-mail")
     testImplementation("org.springframework.kafka:spring-kafka-test")
 }
 

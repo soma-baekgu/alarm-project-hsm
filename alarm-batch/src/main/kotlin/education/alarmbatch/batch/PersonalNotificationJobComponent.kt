@@ -1,6 +1,6 @@
 package education.alarmbatch.batch
 
-import education.alarmbatch.dto.PersonalNotificationDto
+import education.alarmcore.dto.PersonalNotificationDto
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.batch.core.Job
 import org.springframework.batch.core.Step

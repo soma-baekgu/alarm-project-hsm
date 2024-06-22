@@ -1,5 +1,3 @@
-server:
-  port: 8082
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -14,10 +12,18 @@ spring:
       dialect: org.hibernate.dialect.MySQL8InnoDBDialect
     defer-datasource-initialization: true
   sql.init.mode: always
-  batch:
-    jdbc:
-      initialize-schema: always
-    job:
-      enabled: true
   kafka:
     bootstrap-server: 127.0.0.1:29092
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${USERNAME}
+    password: ${PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+        debug: true
