@@ -1,4 +1,4 @@
-package education.alarmbatch.entity
+package education.alarmcore.entity
 
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue

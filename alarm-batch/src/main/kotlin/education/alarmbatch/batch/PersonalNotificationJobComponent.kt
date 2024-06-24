@@ -42,7 +42,7 @@ class PersonalNotificationJobComponent(
 
     @Bean
     fun step(): Step =
-        StepBuilder("personalNotificationStep2", jobRepository)
+        StepBuilder("personalNotificationStep", jobRepository)
             .chunk<PersonalNotificationDto, PersonalNotificationDto>(1000, transactionManager)
             .reader(notificationReader())
             .processor(notificationProcessor())
@@ -71,7 +71,6 @@ class PersonalNotificationJobComponent(
                 sender = rs.getLong("sender"),
                 title = rs.getString("title"),
                 message = rs.getString("message"),
-//                notificationTransferTime = rs.getTimestamp("notification_transfer_time").toLocalDateTime(),
                 receiverEmail = rs.getString("email"),
             )
         }
@@ -80,14 +79,14 @@ class PersonalNotificationJobComponent(
     fun notificationProcessor(): ItemProcessor<PersonalNotificationDto, PersonalNotificationDto> =
         ItemProcessor {
             val future = kafkaTemplate.send("alarm", "reserved", it)
-
             try {
                 future.join()
                 logger.info { "Notification id : ${it.id} sent to: ${it.receiverEmail} with title: ${it.title} and message: ${it.message}" }
             } catch (e: CompletionException) {
                 logger.error {
-                    "Failed to send notification id : ${it.id} to: ${it.receiverEmail} with title: ${it.title} and message: ${it.message}"
+                    "Failed to send notification id : ${it.id} to: ${it.receiverEmail} with title: ${it.title} and message: ${it.message}, error: ${e.message}"
                 }
+                throw e
             }
             it
         }

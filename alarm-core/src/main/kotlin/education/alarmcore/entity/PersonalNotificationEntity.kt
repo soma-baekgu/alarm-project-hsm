@@ -4,13 +4,13 @@ import jakarta.persistence.Entity
 import java.time.LocalDateTime
 
 @Entity
-class GroupNotification(
+class PersonalNotificationEntity(
     sender: Long,
     title: String,
     message: String,
     notificationTransferTime: LocalDateTime,
     val receiver: Long,
-) : Notification(
+) : NotificationEntity(
         sender = sender,
         title = title,
         message = message,

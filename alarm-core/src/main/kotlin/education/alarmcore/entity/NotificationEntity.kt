@@ -10,7 +10,7 @@ import java.time.LocalDateTime
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-abstract class Notification(
+abstract class NotificationEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     open val id: Long = 0L,

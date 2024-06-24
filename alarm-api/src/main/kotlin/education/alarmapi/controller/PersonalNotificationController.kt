@@ -1,5 +1,6 @@
 package education.alarmapi.controller
 
+import education.alarmapi.dto.PersonalImmediateNotificationRequest
 import education.alarmapi.dto.PersonalScheduledNotificationRequest
 import education.alarmapi.service.PersonalNotificationService
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -25,5 +26,17 @@ class PersonalNotificationController(
         }
 
         personalNotificationService.registerNotification(request)
+    }
+
+    @PostMapping("/immediate")
+    fun createImmediatePersonalNotification(
+        @RequestBody request: PersonalImmediateNotificationRequest,
+    ) {
+        logger.info {
+            "Creating immediate personal notification: " +
+                "sender : ${request.sender} receiver : ${request.receiver}"
+        }
+
+        personalNotificationService.sendNotification(request)
     }
 }
